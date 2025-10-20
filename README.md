@@ -1,1 +1,1 @@
-# RNA_editing_pipeline
+# RNA editing pipeline
