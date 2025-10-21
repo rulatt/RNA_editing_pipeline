@@ -6,12 +6,22 @@
 <pre> bash singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4  </pre>
 
 
+Example to run full DNA seq pipeline
 
-<pre> 
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf  run_DNAseq_pipeline --cores 4  </pre>
 
+Available commands : 
+
+<pre>  
+
+run_DNAseq_pipeline           # Run full alignment pipeline
+run_BWA_meme                  # Run BWA meme aligner
+run_GATK_SortSAM              # Sort SAM file & convert to BAM file
+run_samtools_process          # Keep only properly paired aligned reads with a quality of ##"####20 
+run_GATK_rmdup                # remove duplicated reads
+run_GATK_Base_Recalibrator    # Compute base recalibration
+run_GATK_Apply_Recalibration  # Apply base recalibration
   
-
-
 </pre>
 
 
@@ -19,8 +29,7 @@
 
 'config_DNAseq.yaml' 
 
-<pre> 
-# config_DNAseq.yaml
+<pre> # config_DNAseq.yaml
 # Configuration file for DNAseq Snakemake pipeline
 
 software_dir: "/path/to/software_dir"  # Path to .sif files and Rscript 
@@ -44,9 +53,7 @@ reads_PL: "ILLUMINA"  # Read group infos
 
 'config_RNAseq.yaml'
 
-<pre> 
-
-# config_RNAseq.yaml
+<pre> # config_RNAseq.yaml
 # Configuration file for RNAseq Snakemake pipeline
 
 software_dir: "/path/to/software_dir"
@@ -70,24 +77,22 @@ RNA_ID: "RNA_Tumor_ID" # prefix of output.bam files
 
 'config_editing.yaml' 
 
-<pre> 
-  
-# config_editing.yaml
+<pre> # config_editing.yaml
 # Configuration file for REDItools2.0 Snakemake pipeline
 
 software_dir: "/path/to/software_dir"
 resource_dir: "/path/to/ressource"
-output_dir: "/mnt/iribhm/homes/rulattuc/P_Mathieu/Reditools_RES/A549_editing_RES/DLTR00064_rmdup_bqsr"
+output_dir: "/path/to/output_dir"
 
-RNA_bam: "/mnt/iribhm/homes/rulattuc/P_Mathieu/Reditools_RES/ADAR/DLTR00064/DLTR00064.rmdup.split.bqsr.bam"
-DNA_bam: "/mnt/iribhm/homes/rulattuc/P_Mathieu/Reditools_RES/A549_Genome_Mapped/A549_WGS.rmdup.bqsr.bam"
+RNA_bam: "/path/to/RNA_alignment_file.bam"  # Full path to RNA BAM file
+DNA_bam: "/path/to/DNA_alignment_file.bam" # Full path to DNA BAM file
 
-ref_fa: "Homo_sapiens_assembly38.fa"
+ref_fa: "hg38.genome.fa"
 
-RNA_ID: "DLTR00064_rmdup_bqsr"
-DNA_ID: "A549_WGS"
+RNA_ID: "RNA_Tumor_ID" # RNA BAM file prefix
+DNA_ID: "DNA_ID_WGS" # DNA BAM file prefix
 
-custom_bed: ""
+custom_bed: ""                 # Custom bed use for Reditools on DNA steps, none by default (generated after)
 
 coverage_threshold: 10         # Minimum coverage at the edited site
 frequency_threshold_min: 0.1   # Minimum Variant Allele Frequency
