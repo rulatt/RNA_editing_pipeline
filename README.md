@@ -9,9 +9,7 @@ Example to run full DNA seq pipeline
 
 Available commands : 
 
-<pre>  
-
-run_DNAseq_pipeline           # Run full alignment pipeline
+<pre>run_DNAseq_pipeline           # Run full alignment pipeline
 run_BWA_meme                  # Run BWA meme aligner
 run_GATK_SortSAM              # Sort SAM file & convert to BAM file
 run_samtools_process          # Keep only properly paired aligned reads with a quality of ##"####20 
