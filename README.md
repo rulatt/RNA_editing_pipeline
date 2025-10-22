@@ -8,7 +8,7 @@
 
 Example to run full DNA seq pipeline
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf  run_DNAseq_pipeline --cores 4  </pre>
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 run_DNAseq_pipeline </pre>
 
 Available commands : 
 
@@ -24,8 +24,8 @@ run_GATK_Apply_Recalibration  # Apply base recalibration
   
 </pre>
 
-
-
+Final *.rmdup.bqsr.bam BAM File is used for RNA editing analysis 
+ 
 
 'config_DNAseq.yaml' 
 
@@ -36,7 +36,7 @@ software_dir: "/path/to/software_dir"  # Path to .sif files and Rscript
 resource_dir: "/path/to/ressource" # Path to ressources files (GATK ressources files)
 output_dir: "/path/to/output_dir" # output directory 
 
-threads: "40"  # Number of threads to run BWA 
+threads: "40"  # Number of threads to run BWA meme
 
 reads_R1: "/path/to/DNA_reads_R1.fastq.gz" # Full path to R1 & R2 fastq files
 reads_R2: "/path/to/DNA_reads_R2.fastq.gz"
@@ -49,6 +49,31 @@ reads_LB: "unknown"  # Read group infos
 reads_PL: "ILLUMINA"  # Read group infos 
   
 </pre>
+
+
+
+Example to run full RNA seq pipeline 
+
+
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s RNAseq_align_pipeline.sf --cores 4 run_STAR_pipeline </pre>
+
+
+Available commands : 
+
+<pre>  
+  
+run_STAR_pipeline             # Run full alignment pipeline
+run_STAR_genome_generate      # Generates genome index for STAR 
+run_STAR_mapping              # Run STAR aligner 
+run_samtools_process          # Keep only properly paired aligned reads with a quality of ##"####20
+run_GATK_splitN               # Formatting BAM file for next processing steps    
+run_GATK_rmdup                # remove duplicated reads
+run_GATK_Base_Recalibrator    # Compute base recalibration
+run_GATK_Apply_Recalibration  # Apply base recalibration
+  
+</pre>
+
+Final *rmdup.split.bqsr.bam BAM file is used for RNA editing analysis 
 
 
 'config_RNAseq.yaml'
@@ -73,6 +98,28 @@ ref_fa: "/path/to/hg38.genome.fa"
 RNA_ID: "RNA_Tumor_ID" # prefix of output.bam files
   
 </pre>  
+
+
+Example to run full RNA editing detection pipeline 
+
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 run_editing_pipeline </pre>
+
+Available commands : 
+
+<pre>  
+  
+run_editing_pipeline          # Run full editing pipeline
+run_RNA_detection             # Detects variants in RNA  
+run_BED_conversion            # Converts RNA variant table in BED table for DNA variant detection 
+run_DNA_detection             # Detects variants in DNA based on RNA variant positions
+run_annotation                # Annotate RNA variant table with DNA variant table    
+run_r_filtering               # Filter annotated RNA variant table
+ 
+</pre>
+
+
+Final file for downstream analysis : 
+Intermediate files : 
 
 
 'config_editing.yaml' 
@@ -106,3 +153,5 @@ KeepEditing: true              # Keep only A->G & T->C variants (true or false)
 
 Notes : 
 Default config file names are defined in each snakemake file and can be  overriden with --configfile
+
+You can Run only part of the scripts, for example : 
