@@ -16,7 +16,6 @@ run_samtools_process          # Keep only properly paired aligned reads with a q
 run_GATK_rmdup                # remove duplicated reads
 run_GATK_Base_Recalibrator    # Compute base recalibration
 run_GATK_Apply_Recalibration  # Apply base recalibration
-  
 </pre>
 
 Final *.rmdup.bqsr.bam BAM File is used for RNA editing analysis 
