@@ -1,10 +1,7 @@
 # RNA editing pipeline
 
 
-
-
-<pre> bash singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4  </pre>
-
+## DNA-seq Pipeline 
 
 Example to run full DNA seq pipeline
 
@@ -51,6 +48,8 @@ reads_PL: "ILLUMINA"  # Read group infos
 </pre>
 
 
+
+## RNA-seq Pipeline 
 
 Example to run full RNA seq pipeline 
 
@@ -99,6 +98,8 @@ RNA_ID: "RNA_Tumor_ID" # prefix of output.bam files
   
 </pre>  
 
+
+## Editing Pipeline
 
 Example to run full RNA editing detection pipeline 
 
