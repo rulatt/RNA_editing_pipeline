@@ -5,7 +5,7 @@
 
 Example to run full DNA seq pipeline
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 run_DNAseq_pipeline </pre>
+<pre>singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 run_DNAseq_pipeline </pre>
 
 Available commands : 
 
