@@ -5,12 +5,11 @@
 
 Example to run full DNA seq pipeline
 
-<pre>singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 run_DNAseq_pipeline </pre>
+<pre>singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 </pre>
 
 Available commands : 
 
-<pre>run_DNAseq_pipeline           # Run full alignment pipeline
-run_BWA_meme                  # Run BWA meme aligner (output : {DNA_ID}.sam)
+<pre>run_BWA_meme                  # Run BWA meme aligner (output : {DNA_ID}.sam)
 run_GATK_SortSAM              # Sort SAM file & convert to BAM file (output : {DNA_ID}.sort.bam) 
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20  (output : {DNA_ID}.processed.bam)
 run_GATK_rmdup                # remove duplicated reads (output : {DNA_ID}.rmdup.bam) 
@@ -27,7 +26,7 @@ A config file must be provided (default : 'config_DNAseq.yaml',  can be override
 
 Example : 
 
-<pre> # config_DNAseq.yaml
+<pre># config_DNAseq.yaml
 # Configuration file for DNAseq Snakemake pipeline
 
 software_dir: "/path/to/software_dir"  # Path to .sif files and Rscript 
@@ -39,12 +38,16 @@ threads: "40"  # Number of threads to run BWA meme
 reads_R1: "/path/to/DNA_reads_R1.fastq.gz" # Full path to R1 & R2 fastq files
 reads_R2: "/path/to/DNA_reads_R2.fastq.gz"
 
-ref_fa: "/path/to/hg38.genome.fa" # full path to reference genome 
+ref_fa: "hg38.genome.fa" # full path to reference genome 
 
 DNA_ID: "DNA_ID_WGS" # DNA_ID, prefix of output .sam & .bam files
 
 reads_LB: "unknown"  # Read group infos 
-reads_PL: "ILLUMINA"  # Read group infos   
+reads_PL: "ILLUMINA"  # Read group infos 
+
+snps_1000G: "resources_broad_hg38_v0_1000G_phase1.snps.high_confidence.hg38.vcf"
+known_indels: "resources_broad_hg38_v0_Homo_sapiens_assembly38.known_indels.vcf"
+indels_1000G: "resources_broad_hg38_v0_Mills_and_1000G_gold_standard.indels.hg38.vcf"
 </pre>
 
 
@@ -52,13 +55,12 @@ reads_PL: "ILLUMINA"  # Read group infos
 
 Example to run full RNA seq pipeline 
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s RNAseq_align_pipeline.sf --cores 4 run_STAR_pipeline </pre>
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s RNAseq_align_pipeline.sf --cores 4 </pre>
 
 
 Available commands : 
 
-<pre>run_STAR_pipeline             # Run full alignment pipeline
-run_STAR_genome_generate      # Generates genome index for STAR 
+<pre>run_STAR_genome_generate      # Generates genome index for STAR 
 run_STAR_mapping              # Run STAR aligner (output: {RNA_ID}Aligned.sortedByCoord.out.bam)
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20 (output : {RNA_ID}.processed.bam") 
 run_GATK_splitN               # Formatting BAM file for next processing steps (output : {RNA_ID}.split.bam")    
@@ -75,7 +77,7 @@ A config file must be provided (default : 'config_RNAseq.yaml',  can be override
 
 Example : 
 
-<pre> # config_RNAseq.yaml
+<pre># config_RNAseq.yaml
 # Configuration file for RNAseq Snakemake pipeline
 
 software_dir: "/path/to/software_dir"
@@ -90,9 +92,13 @@ gtf_file: "annotation_file.gtf"  # annotation file, must be located in resource_
 reads_R1: "/path/to/RNA_reads_R1.fastq.gz"
 reads_R2: "/path/to/RNA_reads_R2.fastq.gz"
 
-ref_fa: "/path/to/hg38.genome.fa"
+ref_fa: "hg38.genome.fa"
 
 RNA_ID: "RNA_Tumor_ID" # prefix of output.bam files
+
+snps_1000G: "resources_broad_hg38_v0_1000G_phase1.snps.high_confidence.hg38.vcf"
+known_indels: "resources_broad_hg38_v0_Homo_sapiens_assembly38.known_indels.vcf"
+indels_1000G: "resources_broad_hg38_v0_Mills_and_1000G_gold_standard.indels.hg38.vcf"
 </pre>  
 
 
@@ -100,12 +106,11 @@ RNA_ID: "RNA_Tumor_ID" # prefix of output.bam files
 
 Example to run full RNA editing detection pipeline 
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 run_editing_pipeline </pre>
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 </pre>
 
 Available commands : 
 
-<pre>run_editing_pipeline          # Run full editing pipeline
-run_RNA_detection             # Detects variants in RNA  (output : {RNA_ID}.table.txt )
+<pre>run_RNA_detection             # Detects variants in RNA  (output : {RNA_ID}.table.txt )
 run_BED_conversion            # Converts RNA variant table in BED table for DNA variant detection  (output : {RNA_ID}.table.bed )
 run_DNA_detection             # Detects variants in DNA based on RNA variant positions (output : {DNA_ID}.table.txt )
 run_annotation                # Annotate RNA variant table with DNA variant table (output : {RNA_ID}_annotated.table.txt )   
@@ -120,7 +125,7 @@ A config file must be provided (default : 'config_editing.yaml',  can be overrid
 
 Example : 
 
-<pre> # config_editing.yaml
+<pre># config_editing.yaml
 # Configuration file for REDItools2.0 Snakemake pipeline
 
 software_dir: "/path/to/software_dir"
@@ -135,7 +140,7 @@ ref_fa: "hg38.genome.fa"
 RNA_ID: "RNA_Tumor_ID" # RNA BAM file prefix
 DNA_ID: "DNA_ID_WGS" # DNA BAM file prefix
 
-custom_bed: ""                 # Custom bed use for Reditools on DNA steps, none by default (generated after)
+custom_bed: ""                 # Custom BED file for run_DNA_detection step (if not running run_BED_conversion step) 
 
 coverage_threshold: 10         # Minimum coverage at the edited site
 frequency_threshold_min: 0.1   # Minimum Variant Allele Frequency
@@ -148,4 +153,6 @@ KeepEditing: true              # Keep only A->G & T->C variants (true or false)
 
 Notes : 
 
-You can Run only part of the scripts, for example : 
+You can run only parts of the scripts, for example : 
+
+<pre>singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 run_annotation run_r_filtering </pre>
