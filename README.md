@@ -86,7 +86,7 @@ software_dir: "/path/to/software_dir"
 resource_dir: "/path/to/ressource"
 output_dir: "/path/to/output_dir"  
 
-genome_dir: "/path/to/STAR/index/"
+genome_dir: "/path/to/STAR_index/" 
 
 threads: "5"
 gtf_file: "annotation_file.gtf"  # annotation file, must be located in resource_dir 
