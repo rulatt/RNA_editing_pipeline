@@ -41,7 +41,7 @@ rule run_STAR_genome_generate:
     shell:
         """
 	
-	singularity exec -B /mnt/iribhm {SOFT_DIR}/star_2.7.11b.sif STAR --runMode genomeGenerate \
+	singularity exec {SOFT_DIR}/star_2.7.11b.sif STAR --runMode genomeGenerate \
 	--runThreadN {THREADS} \
 	--genomeDir {GENOME_DIR} \
 	--genomeFastaFiles {RESOURCE_DIR}/{REF_FA} \
@@ -59,7 +59,7 @@ rule run_STAR_mapping:
     shell:
         """
 
-	singularity exec -B /mnt/iribhm {SOFT_DIR}/star_2.7.11b.sif STAR --runMode alignReads \
+	singularity exec {SOFT_DIR}/star_2.7.11b.sif STAR --runMode alignReads \
 	--runThreadN {THREADS} \
 	--genomeDir {GENOME_DIR} \
 	--genomeLoad NoSharedMemory \
@@ -85,13 +85,13 @@ rule run_samtools_process:
         f"{OUTPUT_DIR}/logs/run_samtools_process.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools \
+        singularity exec {SOFT_DIR}/samtools_1.22.sif samtools \
             view -@ {THREADS} \
             -F 0x04 -f 0x2 -q 20 -b \
             -o {output.processed_bam} \
 	    "{input.bam}"  > {log} 2>&1
 
-	singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools index {OUTPUT_DIR}/{RNA_ID}.processed.bam
+	singularity exec {SOFT_DIR}/samtools_1.22.sif samtools index {OUTPUT_DIR}/{RNA_ID}.processed.bam
         """
 
 rule run_GATK_rmdup:
@@ -103,7 +103,7 @@ rule run_GATK_rmdup:
         f"{OUTPUT_DIR}/logs/run_GATK_rmdup.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk MarkDuplicates \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk MarkDuplicates \
             -I {input.processed_bam} \
             -O {output.rmdup_bam} \
             -M {OUTPUT_DIR}/{RNA_ID}_rmdup_metrics.txt \
@@ -122,7 +122,7 @@ rule run_GATK_splitN:
         f"{OUTPUT_DIR}/logs/run_GATK_splitN.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk SplitNCigarReads \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk SplitNCigarReads \
             -I {input.rmdup_bam} \
             -O {output.split_bam} \
             -R {RESOURCE_DIR}/{REF_FA}  > {log} 2>&1
@@ -138,7 +138,7 @@ rule run_GATK_Base_Recalibrator:
         f"{OUTPUT_DIR}/logs/run_GATK_Base_Recalibrator.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk BaseRecalibrator \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk BaseRecalibrator \
             -I {input.split_bam} \
 	    -R {RESOURCE_DIR}/{REF_FA} \
 	    --known-sites {RESOURCE_DIR}/{SNPS_1000G} \
@@ -158,7 +158,7 @@ rule run_GATK_Apply_Recalibration:
         f"{OUTPUT_DIR}/logs/run_GATK_ApplyBQSR.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk ApplyBQSR \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk ApplyBQSR \
             -I {input.split_bam} \
             -R {RESOURCE_DIR}/{REF_FA} \
             -bqsr-recal-file {input.recal_table} \
