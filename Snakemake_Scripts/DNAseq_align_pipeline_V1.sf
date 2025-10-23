@@ -84,7 +84,7 @@ rule run_samtools_process:
             -o {output.processed_bam} \
             "{input.sorted_bam}"  > {log} 2>&1
 
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools index {OUTPUT_DIR}/{DNA_ID}.processed.bam
+        singularity exec {SOFT_DIR}/samtools_1.22.sif samtools index {OUTPUT_DIR}/{DNA_ID}.processed.bam
         """
 
 
