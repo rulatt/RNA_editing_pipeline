@@ -153,11 +153,11 @@ DNA_ID: "DNA_ID_WGS" # DNA BAM file prefix
 custom_bed: ""                 # Custom BED file for run_DNA_detection step (if not running run_BED_conversion step) 
 
 coverage_threshold: 10         # Minimum coverage at the edited site
-frequency_threshold_min: 0.1   # Minimum Variant Allele Frequency
-frequency_threshold_max: 0.95  # Maximum Variant Allele Frequency
+frequency_threshold_min: 0.1   # Minimum Variant Allele Frequency in RNA-seq
+frequency_threshold_max: 0.95  # Maximum Variant Allele Frequency in RNA-seq
 KeepOneVar: true               # Keep only monoallelic RNA variant (true or false)
-StrictFiltering: true          # Keep only variant with no change in DNA corresponding position  (true or false)
-KeepEditing: true              # Keep only A->G & T->C variants (true or false)
+StrictFiltering: true          # Keep only RNA variant with no change in DNA corresponding position  (true or false). If set to false, RNA variant will be kept if matching DNA position has either no variant or a variant other than A>G or T>C
+KeepEditing: true              # Keep only A>G & T>C variants (true or false)
 </pre>   
 
 
