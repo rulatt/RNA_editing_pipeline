@@ -5,11 +5,12 @@
 
 Example to run full DNA seq pipeline
 
-<pre>singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 </pre>
+<pre>singularity exec snakemake_9.12.0.sif snakemake -s DNAseq_align_pipeline.sf --cores 4 all </pre>
 
 Available commands : 
 
-<pre>run_BWA_meme                  # Run BWA meme aligner (output : {DNA_ID}.sam)
+<pre>all                           # Run all commands
+run_BWA_meme                  # Run BWA meme aligner (output : {DNA_ID}.sam)
 run_GATK_SortSAM              # Sort SAM file & convert to BAM file (output : {DNA_ID}.sort.bam) 
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20  (output : {DNA_ID}.processed.bam)
 run_GATK_rmdup                # remove duplicated reads (output : {DNA_ID}.rmdup.bam) 
@@ -55,12 +56,13 @@ indels_1000G: "resources_broad_hg38_v0_Mills_and_1000G_gold_standard.indels.hg38
 
 Example to run full RNA seq pipeline 
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s RNAseq_align_pipeline.sf --cores 4 </pre>
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s RNAseq_align_pipeline.sf --cores 4 all</pre>
 
 
 Available commands : 
 
-<pre>run_STAR_genome_generate      # Generates genome index for STAR 
+<pre>all                           # Run all commands
+run_STAR_genome_generate      # Generates genome index for STAR 
 run_STAR_mapping              # Run STAR aligner (output: {RNA_ID}Aligned.sortedByCoord.out.bam)
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20 (output : {RNA_ID}.processed.bam") 
 run_GATK_splitN               # Formatting BAM file for next processing steps (output : {RNA_ID}.split.bam")    
@@ -106,11 +108,12 @@ indels_1000G: "resources_broad_hg38_v0_Mills_and_1000G_gold_standard.indels.hg38
 
 Example to run full RNA editing detection pipeline 
 
-<pre> singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 </pre>
+<pre> singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 all</pre>
 
 Available commands : 
 
-<pre>run_RNA_detection             # Detects variants in RNA  (output : {RNA_ID}.table.txt )
+<pre>all                           # Run all commands 
+run_RNA_detection             # Detects variants in RNA  (output : {RNA_ID}.table.txt )
 run_BED_conversion            # Converts RNA variant table in BED table for DNA variant detection  (output : {RNA_ID}.table.bed )
 run_DNA_detection             # Detects variants in DNA based on RNA variant positions (output : {DNA_ID}.table.txt )
 run_annotation                # Annotate RNA variant table with DNA variant table (output : {RNA_ID}_annotated.table.txt )   
