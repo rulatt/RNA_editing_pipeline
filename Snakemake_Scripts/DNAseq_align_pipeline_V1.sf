@@ -41,7 +41,7 @@ rule run_BWA_meme:
     shell:
         """
 	
-	singularity exec -B /mnt/iribhm {SOFT_DIR}/bwameme.sif bwa-meme mem \
+	singularity exec {SOFT_DIR}/bwameme.sif bwa-meme mem \
 	-t {THREADS} \
 	-M \
 	-R "@RG\\tID:{DNA_ID}_X\\tSM:{DNA_ID}\\tLB:{READS_LB}\\tPL:{READS_PL}" \
@@ -60,7 +60,7 @@ rule run_GATK_SortSAM:
     shell:
         """
 
-	singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk SortSam \
+	singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk SortSam \
         -I {input.sam} \
         -O {output.sorted_bam} \
         -R {RESOURCE_DIR}/{REF_FA} \
@@ -78,7 +78,7 @@ rule run_samtools_process:
         f"{OUTPUT_DIR}/logs/run_samtools_process.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools \
+        singularity exec {SOFT_DIR}/samtools_1.22.sif samtools \
             view -@ {THREADS} \
             -F 0x04 -f 0x2 -q 20 -b \
             -o {output.processed_bam} \
@@ -97,7 +97,7 @@ rule run_GATK_rmdup:
         f"{OUTPUT_DIR}/logs/run_GATK_rmdup.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk MarkDuplicates \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk MarkDuplicates \
             -I {input.processed_bam} \
             -O {output.rmdup_bam} \
             -M {OUTPUT_DIR}/{DNA_ID}_rmdup_metrics.txt \
@@ -116,7 +116,7 @@ rule run_GATK_Base_Recalibrator:
         f"{OUTPUT_DIR}/logs/run_GATK_Base_Recalibrator.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk BaseRecalibrator \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk BaseRecalibrator \
             -I {input.rmdup_bam} \
 	    -R {RESOURCE_DIR}/{REF_FA} \
 	    --known-sites {RESOURCE_DIR}/{SNPS_1000G} \
@@ -136,7 +136,7 @@ rule run_GATK_Apply_Recalibration:
         f"{OUTPUT_DIR}/logs/run_GATK_ApplyBQSR.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk ApplyBQSR \
+        singularity exec {SOFT_DIR}/gatk_4.6.1.0.sif gatk ApplyBQSR \
             -I {input.rmdup_bam} \
             -R {RESOURCE_DIR}/{REF_FA} \
             -bqsr-recal-file {input.recal_table} \
