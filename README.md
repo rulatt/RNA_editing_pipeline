@@ -1,6 +1,13 @@
 # RNA editing pipeline
 
 
+## Requirements 
+
+- Reference genome in fasta format
+- Ressources files resources_broad_hg38_v0_1000G_phase1.snps.high_confidence.hg38.vcf, resources_broad_hg38_v0_Homo_sapiens_assembly38.known_indels.vcf and resources_broad_hg38_v0_Homo_sapiens_assembly38.known_indels.vcf (can be downloaded on https://gatk.broadinstitute.org/)
+- Singularity/Apptainer installed
+
+
 ## DNA-seq Pipeline 
 
 Example to run full DNA seq pipeline
