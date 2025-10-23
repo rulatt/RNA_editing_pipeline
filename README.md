@@ -13,7 +13,7 @@ Available commands :
 run_BWA_meme                  # Run BWA meme aligner (output : {DNA_ID}.sam)
 run_GATK_SortSAM              # Sort SAM file & convert to BAM file (output : {DNA_ID}.sort.bam) 
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20  (output : {DNA_ID}.processed.bam)
-run_GATK_rmdup                # remove duplicated reads (output : {DNA_ID}.rmdup.bam) 
+run_GATK_rmdup                # Remove duplicated reads (output : {DNA_ID}.rmdup.bam) 
 run_GATK_Base_Recalibrator    # Compute base recalibration (output : {DNA_ID}_recal_data.table) 
 run_GATK_Apply_Recalibration  # Apply base recalibration (output : {DNA_ID}.rmdup.bqsr.bam) 
 </pre>
@@ -66,7 +66,7 @@ run_STAR_genome_generate      # Generates genome index for STAR
 run_STAR_mapping              # Run STAR aligner (output: {RNA_ID}Aligned.sortedByCoord.out.bam)
 run_samtools_process          # Keep only properly paired aligned reads with a MAPQ ≥ 20 (output : {RNA_ID}.processed.bam") 
 run_GATK_splitN               # Formatting BAM file for next processing steps (output : {RNA_ID}.split.bam")    
-run_GATK_rmdup                # remove duplicated reads (output : {RNA_ID}.rmdup.bam)
+run_GATK_rmdup                # Remove duplicated reads (output : {RNA_ID}.rmdup.bam)
 run_GATK_Base_Recalibrator    # Compute base recalibration (output : {RNA_ID}_recal_data.table")
 run_GATK_Apply_Recalibration  # Apply base recalibration (output : {RNA_ID}.rmdup.split.bqsr.bam ) 
 </pre>
@@ -113,9 +113,9 @@ Example to run full RNA editing detection pipeline
 Available commands : 
 
 <pre>all                           # Run all commands 
-run_RNA_detection             # Detects variants in RNA  (output : {RNA_ID}.table.txt )
-run_BED_conversion            # Converts RNA variant table in BED table for DNA variant detection  (output : {RNA_ID}.table.bed )
-run_DNA_detection             # Detects variants in DNA based on RNA variant positions (output : {DNA_ID}.table.txt )
+run_RNA_detection             # Detect variants in RNA  (output : {RNA_ID}.table.txt )
+run_BED_conversion            # Convert RNA variant table in BED table for DNA variant detection  (output : {RNA_ID}.table.bed )
+run_DNA_detection             # Detect variants in DNA based on RNA variant positions (output : {DNA_ID}.table.txt )
 run_annotation                # Annotate RNA variant table with DNA variant table (output : {RNA_ID}_annotated.table.txt )   
 run_r_filtering               # Filter annotated RNA variant table (output : {RNA_ID}_annotated_filtered.table.txt )
 </pre>
