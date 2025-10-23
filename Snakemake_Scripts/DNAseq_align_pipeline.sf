@@ -1,0 +1,144 @@
+
+# DNAseq pipeline
+
+configfile: "config_DNAseq.yaml"  # default, can be overridden with --configfile
+
+SOFT_DIR     = config["software_dir"]
+RESOURCE_DIR = config["resource_dir"]
+OUTPUT_DIR   = config["output_dir"]
+REF_FA       = config["ref_fa"]
+DNA_ID       = config["DNA_ID"]
+THREADS	     = config["threads"]
+READS_R1     = config["reads_R1"]
+READS_R2     = config["reads_R2"]
+READS_LB     = config["reads_LB"]
+READS_PL     = config["reads_PL"]
+SNPS_1000G   = config["snps_1000G"]
+KNOWN_INDELS = config["known_indels"]
+INDELS_1000G = config["indels_1000G"]
+
+# --------------------------
+# Rules
+# --------------------------
+
+
+rule make_logs_dir:
+    output:
+        directory(f"{OUTPUT_DIR}/logs")
+    shell:
+        "mkdir -p {output}"
+
+
+rule all:
+    input:
+        f"{OUTPUT_DIR}/{DNA_ID}.rmdup.bqsr.bam"
+
+rule run_BWA_meme:
+    output:
+        sam = f"{OUTPUT_DIR}/{DNA_ID}.sam"
+    log:
+        f"{OUTPUT_DIR}/logs/run_BWA_meme.log"
+    shell:
+        """
+	
+	singularity exec -B /mnt/iribhm {SOFT_DIR}/bwameme.sif bwa-meme mem \
+	-t {THREADS} \
+	-M \
+	-R "@RG\\tID:{DNA_ID}_X\\tSM:{DNA_ID}\\tLB:{READS_LB}\\tPL:{READS_PL}" \
+	{RESOURCE_DIR}/{REF_FA} \
+	{READS_R1} {READS_R2} > {output.sam} 2> {log}
+	
+        """
+
+rule run_GATK_SortSAM:
+    input:
+        sam=f"{OUTPUT_DIR}/{DNA_ID}.sam"
+    output:
+        sorted_bam = f"{OUTPUT_DIR}/{DNA_ID}.sort.bam"
+    log:
+        f"{OUTPUT_DIR}/logs/run_GATK_SortSAM.log"
+    shell:
+        """
+
+	singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk SortSam \
+        -I {input.sam} \
+        -O {output.sorted_bam} \
+        -R {RESOURCE_DIR}/{REF_FA} \
+        --SORT_ORDER coordinate \
+	--TMP_DIR {OUTPUT_DIR}/tmp > {log} 2>&1
+        """
+
+
+rule run_samtools_process:
+    input:
+        sorted_bam = f"{OUTPUT_DIR}/{DNA_ID}.sort.bam"
+    output:
+        processed_bam = f"{OUTPUT_DIR}/{DNA_ID}.processed.bam"
+    log:
+        f"{OUTPUT_DIR}/logs/run_samtools_process.log"
+    shell:
+        """
+        singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools \
+            view -@ {THREADS} \
+            -F 0x04 -f 0x2 -q 20 -b \
+            -o {output.processed_bam} \
+            "{input.sorted_bam}"  > {log} 2>&1
+
+        singularity exec -B /mnt/iribhm {SOFT_DIR}/samtools_1.22.sif samtools index {OUTPUT_DIR}/{DNA_ID}.processed.bam
+        """
+
+
+rule run_GATK_rmdup:
+    input:
+        processed_bam = f"{OUTPUT_DIR}/{DNA_ID}.processed.bam"
+    output:
+        rmdup_bam = f"{OUTPUT_DIR}/{DNA_ID}.rmdup.bam"
+    log:
+        f"{OUTPUT_DIR}/logs/run_GATK_rmdup.log"
+    shell:
+        """
+        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk MarkDuplicates \
+            -I {input.processed_bam} \
+            -O {output.rmdup_bam} \
+            -M {OUTPUT_DIR}/{DNA_ID}_rmdup_metrics.txt \
+	    --CREATE_INDEX true \
+	    --TMP_DIR {OUTPUT_DIR}/tmp \
+	    --REMOVE_DUPLICATES true  > {log} 2>&1
+        """
+
+
+rule run_GATK_Base_Recalibrator:
+    input:
+        rmdup_bam = f"{OUTPUT_DIR}/{DNA_ID}.rmdup.bam"
+    output:
+        recal_table = f"{OUTPUT_DIR}/{DNA_ID}_recal_data.table"
+    log:
+        f"{OUTPUT_DIR}/logs/run_GATK_Base_Recalibrator.log"
+    shell:
+        """
+        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk BaseRecalibrator \
+            -I {input.rmdup_bam} \
+	    -R {RESOURCE_DIR}/{REF_FA} \
+	    --known-sites {RESOURCE_DIR}/{SNPS_1000G} \
+	    --known-sites {RESOURCE_DIR}/{KNOWN_INDELS} \
+	    --known-sites {RESOURCE_DIR}/{INDELS_1000G} \
+            -O {output.recal_table} > {log} 2>&1
+        """
+
+
+rule run_GATK_Apply_Recalibration:
+    input:
+        recal_table = f"{OUTPUT_DIR}/{DNA_ID}_recal_data.table",
+        rmdup_bam = f"{OUTPUT_DIR}/{DNA_ID}.rmdup.bam"
+    output:
+        bqsr_bam = protected(f"{OUTPUT_DIR}/{DNA_ID}.rmdup.bqsr.bam")
+    log:
+        f"{OUTPUT_DIR}/logs/run_GATK_ApplyBQSR.log"
+    shell:
+        """
+        singularity exec -B /mnt/iribhm {SOFT_DIR}/gatk_4.6.1.0.sif gatk ApplyBQSR \
+            -I {input.rmdup_bam} \
+            -R {RESOURCE_DIR}/{REF_FA} \
+            -bqsr-recal-file {input.recal_table} \
+            -O {output.bqsr_bam} > {log} 2>&1
+        """
