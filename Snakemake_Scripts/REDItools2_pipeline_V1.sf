@@ -37,7 +37,7 @@ rule run_RNA_detection:
     shell:
         """
         mkdir -p {OUTPUT_DIR}/logs
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
+        singularity exec {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
             /reditools2.0/src/cineca/reditools.py \
             -S -C -bq 20 -q 20 -f {RNA_BAM} \
             -r {RESOURCE_DIR}/{REF_FA} \
@@ -54,7 +54,7 @@ rule run_BED_conversion:
     shell:
         """
         tail -n +2 {input.table} > {OUTPUT_DIR}/{RNA_ID}.table.noHeader.txt
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
+        singularity exec {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
             /reditools2.0/src/cineca/reditools_table_to_bed.py \
             -i {OUTPUT_DIR}/{RNA_ID}.table.noHeader.txt \
             -o {output.bed} > {log} 2>&1
@@ -69,7 +69,7 @@ rule run_DNA_detection:
         f"{OUTPUT_DIR}/logs/run_DNA_detection.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
+        singularity exec {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
             /reditools2.0/src/cineca/reditools.py \
             -bq 20 -q 20 \
             -f {DNA_BAM} \
@@ -89,7 +89,7 @@ rule run_annotation:
         f"{OUTPUT_DIR}/logs/run_annotation.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
+        singularity exec {SOFT_DIR}/reditools2_1.0.0.sif python2.7 \
             /reditools2.0/src/cineca/annotate_with_DNA.py \
             -r {input.rna_table} \
             -d {input.dna_table} \
@@ -107,7 +107,7 @@ rule run_r_filtering:
         f"{OUTPUT_DIR}/logs/run_R_filtering.log"
     shell:
         """
-        singularity exec -B /mnt/iribhm {SOFT_DIR}/r4.3.sif Rscript {SOFT_DIR}/Rscript_editing_filtering.R \
+        singularity exec {SOFT_DIR}/r4.3.sif Rscript {SOFT_DIR}/Rscript_editing_filtering.R \
             RNA={input.rna_table} \
             ANNOTATED={input.annotated_table} \
             OutputPath={OUTPUT_DIR} \
