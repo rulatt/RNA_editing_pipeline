@@ -167,3 +167,8 @@ You can run only parts of the scripts, for example :
 
 <pre>singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 run_annotation run_r_filtering --rerun-triggers mtime 
 # use --rerun-triggers mtime if the code has changed</pre>
+
+If a file has been modified at any step, it will restart the pipeline from the earliest step using the modified file. To avoid that, use '--allowed-rules command -R command'
+
+Example :
+<pre>singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 --allowed-rules run_r_filtering -R run_r_filtering</pre>
