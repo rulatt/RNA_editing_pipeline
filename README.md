@@ -161,6 +161,15 @@ KeepEditing: true              # Keep only A>G & T>C variants (true or false)
 </pre>   
 
 
+Example of final filtered output : 
+
+<p align="center">
+<img src="[https://github.com/BioinfoUNIBA/REDItools/blob/master/Images/Fig1.png](https://github.com/rulatt/RNA_editing_pipeline/blob/main/Images/reditools2_final_output.png)" width="600px">
+</p>
+
+Column names starting with "g" correspond to the matching DNA infos for each entry 
+
+
 Notes : 
 
 You can run only parts of the scripts, for example : 
