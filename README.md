@@ -166,4 +166,4 @@ Notes :
 You can run only parts of the scripts, for example : 
 
 <pre>singularity exec snakemake_9.12.0.sif snakemake -s REDItools2_pipeline.sf --cores 4 run_annotation run_r_filtering --rerun-triggers mtime 
-# use --rerun-triggers mtime if one of the output file has been modified</pre>
+# use --rerun-triggers mtime if the code has changed</pre>
